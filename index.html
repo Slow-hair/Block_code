@@ -10,52 +10,21 @@
     </header>
 
     <div style="display: flex;">
-
         <div style="width: 250px; border: 1px solid black; padding: 10px;">
-
-            <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightblue;" draggable="true" ondragstart="move(event)">Объявить переменную:</div>
-            <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightblue;" draggable="true" ondragstart="move(event)">Присваивание:</div>
+            <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightblue;" draggable="true" ondragstart="move(event)">Присваивание</div>
             <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightgreen;" draggable="true" ondragstart="move(event)">число + число</div>
             <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightgreen;" draggable="true" ondragstart="move(event)">число - число</div>
             <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightgreen;" draggable="true" ondragstart="move(event)">число * число</div>
             <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightgreen;" draggable="true" ondragstart="move(event)">число / число</div>
-            <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightcoral;" draggable="true" ondragstart="move(event)">Если то ...</div>
-        
+            <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightcoral;" draggable="true" ondragstart="move(event)">Если то </div>
         </div>
-        
         <div style="flex: 1; min-height: 500px; border: 2px solid black; padding: 10px; margin-left: 10px;" 
              ondragover="event.preventDefault()" 
              ondrop="drop(event)"
-             id="block_zone">
+             id="block_zone"> 
         </div>
     </div>
 
-    <script>    
-        function move(self) {
-            self.dataTransfer.setData('text/plain', self.target.outerHTML);
-        }
-        
-        function drop(self) {
-            self.preventDefault();
-            
-            let html = self.dataTransfer.getData('text/plain');
-            let temp = document.createElement('div');
-            temp.innerHTML = html;
-            let new_block = temp.firstChild;
-                       
-            let target = self.target;
-            
-            if (target.id == 'block_zone') {
-                target.appendChild(new_block);
-            }
-            else {
-                let box = document.createElement('div');
-                box.style.marginLeft = '20px';
-                box.appendChild(new_block);
-                target.appendChild(box);
-            }
-        }
-    </script>
+    <script src="script_1.js"> </script>
 </body>
 </html>
-12131
