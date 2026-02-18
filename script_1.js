@@ -21,4 +21,4 @@ function move(self) {
                 box.appendChild(new_block);
                 target.appendChild(box);
             }
-        }
+        }       

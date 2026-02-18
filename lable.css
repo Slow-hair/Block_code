@@ -1,0 +1,55 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.container {
+    display: flex;
+    padding: 10px;
+}
+
+.blocks-palette {
+    width: 250px;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.block {
+    border: 1px solid black;
+    margin: 5px;
+    padding: 8px;
+    cursor: move;
+    user-select: none;
+}
+
+.block-assignment {
+    background: lightblue;
+}
+
+.block-operation {
+    background: lightgreen;
+}
+
+.block-condition {
+    background: lightcoral;
+}
+
+.block-zone {
+    flex: 1;
+    min-height: 500px;
+    border: 2px solid black;
+    padding: 10px;
+    margin-left: 10px;
+    background-color: white;
+}

@@ -3,28 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Blokcode</title>
+    <link rel="stylesheet" href="lable.css">
 </head>
 <body>
     <header>
         <h1>Blokcode</h1>
     </header>
 
-    <div style="display: flex;">
-        <div style="width: 250px; border: 1px solid black; padding: 10px;">
-            <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightblue;" draggable="true" ondragstart="move(event)">Присваивание</div>
-            <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightgreen;" draggable="true" ondragstart="move(event)">число + число</div>
-            <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightgreen;" draggable="true" ondragstart="move(event)">число - число</div>
-            <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightgreen;" draggable="true" ondragstart="move(event)">число * число</div>
-            <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightgreen;" draggable="true" ondragstart="move(event)">число / число</div>
-            <div style="border: 1px solid black; margin: 5px; padding: 8px; background: lightcoral;" draggable="true" ondragstart="move(event)">Если то </div>
+    <div class="container">
+        <div class="blocks-palette">
+            <div class="block block-assignment" draggable="true" ondragstart="move(event)">Присваивание</div>
+            <div class="block block-operation" draggable="true" ondragstart="move(event)">число + число</div>
+            <div class="block block-operation" draggable="true" ondragstart="move(event)">число - число</div>
+            <div class="block block-operation" draggable="true" ondragstart="move(event)">число * число</div>
+            <div class="block block-operation" draggable="true" ondragstart="move(event)">число / число</div>
+            <div class="block block-condition" draggable="true" ondragstart="move(event)">Если то</div>
         </div>
-        <div style="flex: 1; min-height: 500px; border: 2px solid black; padding: 10px; margin-left: 10px;" 
+        <div class="block-zone" 
              ondragover="event.preventDefault()" 
              ondrop="drop(event)"
-             id="block_zone"> 
+             id="block_zone">
         </div>
     </div>
 
-    <script src="script_1.js"> </script>
+    <script src="script_1.js"></script>
 </body>
 </html>
