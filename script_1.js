@@ -34,7 +34,7 @@ function runCode() {
     const blocks = blockZone.children;
 
     if (blocks.length === 0) {
-        resultDisplay.innerHTML = 'В рабочей области нет блоков.';
+        resultDisplay.innerHTML = 'Где блоки?';
         return;
     }
 
@@ -43,5 +43,30 @@ function runCode() {
         const blockType = block.dataset.type || 'noname';
         const text = block.textContent.trim().replace(/\s+/g, ' ');
         resultDisplay.innerHTML += `Блок ${i + 1}: ${text} (${blockType})<br>`;
+
+        if (['add', 'subtract', 'multiply', 'divide'].includes(blockType)) {
+            const firstFragment = block.querySelector('.left');
+            const secondFragment = block.querySelector('.right');
+            if (firstFragment && secondFragment) {
+                const firstValue = parseFloat(firstFragment.value);
+                const secondValue = parseFloat(secondFragment.value);
+                
+                if (Number(firstValue) === firstValue && Number(secondValue) === secondValue && 
+                    isFinite(firstValue) && isFinite(secondValue)) {
+                    
+                    let result;
+                    if (blockType === 'add') result = firstValue + secondValue;
+                    else if (blockType === 'subtract') result = firstValue - secondValue;
+                    else if (blockType === 'multiply') result = firstValue * secondValue;
+                    else if (blockType === 'divide') {
+                        if (secondValue !== 0) result = firstValue / secondValue;
+                        else result = 'НА НОЛЬ НЕ ДЕЛИМ';
+                    }
+                    resultDisplay.innerHTML += `получается: ${result}<br>`;
+                } else {
+                    resultDisplay.innerHTML += `не берем такое <br>`;
+                }
+            }
+        }
     }
 }
