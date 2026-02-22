@@ -17,6 +17,7 @@ h1 {
 .container {
     display: flex;
     padding: 10px;
+    gap: 10px;
 }
 
 .blocks-palette {
@@ -50,6 +51,43 @@ h1 {
     min-height: 500px;
     border: 2px solid black;
     padding: 10px;
-    margin-left: 10px;
     background-color: white;
 }
+
+.output-panel {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.run-button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+.run-button:hover {
+    background-color: #45a049;
+}
+
+.output-area {
+    border: 2px solid black;
+    padding: 10px;
+    min-height: 200px;
+    background-color: #f9f9f9;
+}
+
+#result_display {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    min-height: 50px;
+    font-family: monospace;
+}
+
