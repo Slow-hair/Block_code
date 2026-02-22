@@ -31,4 +31,17 @@ function runCode() {
     
     resultDisplay.innerHTML = '';
 
+    const blocks = blockZone.children;
+
+    if (blocks.length === 0) {
+        resultDisplay.innerHTML = 'В рабочей области нет блоков.';
+        return;
+    }
+
+    for (let i = 0; i < blocks.length; i++) {
+        const block = blocks[i];
+        const blockType = block.dataset.type || 'noname';
+        const text = block.textContent.trim().replace(/\s+/g, ' ');
+        resultDisplay.innerHTML += `Блок ${i + 1}: ${text} (${blockType})<br>`;
+    }
 }
