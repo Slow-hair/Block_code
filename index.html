@@ -14,29 +14,26 @@
 
     <div class="container">
         <div class="blocks-palette">
-            <!-- Присваивание -->
             <div class="block block-assignment" draggable="true" data-type="assignment" ondragstart="move(event)">
                 <input type="text" class="var-name" placeholder="переменная" value="x">
                 =
-                <input type="number" class="var-value" value="0">
+                <input type="number" class="var-value" value="">
             </div>
 
-            <!-- Арифметический блок -->
             <div class="block block-operation" draggable="true" data-type="operation" ondragstart="move(event)">
-                <input type="number" class="left" value="0">
+                <input type="number" class="left" value="">
                 <select class="operator">
                     <option value="add">+</option>
                     <option value="subtract">-</option>
                     <option value="multiply">*</option>
                     <option value="divide">/</option>
                 </select>
-                <input type="number" class="right" value="0">
+                <input type="number" class="right" value="">
             </div>
 
-            <!-- Блок условия -->
             <div class="block block-condition" draggable="true" data-type="condition" ondragstart="move(event)">
                 если
-                <input type="number" class="left" value="0">
+                <input type="number" class="left" value="">
                 <select class="comparison">
                     <option value="eq">==</option>
                     <option value="neq">!=</option>
@@ -44,7 +41,7 @@
                         <= </option>
                     <option value="gte"> >= </option>
                 </select>
-                <input type="number" class="right" value="0">
+                <input type="number" class="right" value="">
                 то
             </div>
         </div>
