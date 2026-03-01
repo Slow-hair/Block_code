@@ -4,17 +4,17 @@ function move(event) {
 
 function drop(event) {
     event.preventDefault();
-    
+
     let html = event.dataTransfer.getData('text/plain');
     let temp = document.createElement('div');
     temp.innerHTML = html;
     let new_block = temp.firstChild;
-    
+
     new_block.removeAttribute('draggable');
     new_block.style.cursor = 'default';
-                   
+
     let target = event.target;
-    
+
     if (target.id == 'block_zone') {
         target.appendChild(new_block);
     } else {
@@ -28,7 +28,7 @@ function drop(event) {
 function runCode() {
     const blockZone = document.getElementById('block_zone');
     const resultDisplay = document.getElementById('result_display');
-    
+
     resultDisplay.innerHTML = '';
 
     const blocks = blockZone.children;
@@ -50,10 +50,10 @@ function runCode() {
             if (firstFragment && secondFragment) {
                 const firstValue = parseFloat(firstFragment.value);
                 const secondValue = parseFloat(secondFragment.value);
-                
-                if (Number(firstValue) === firstValue && Number(secondValue) === secondValue && 
+
+                if (Number(firstValue) === firstValue && Number(secondValue) === secondValue &&
                     isFinite(firstValue) && isFinite(secondValue)) {
-                    
+
                     let result;
                     if (blockType === 'add') result = firstValue + secondValue;
                     else if (blockType === 'subtract') result = firstValue - secondValue;

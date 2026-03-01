@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Blokcode</title>
     <link rel="stylesheet" href="lable.css">
 </head>
+
 <body>
     <header>
         <h1>Blokcode</h1>
@@ -12,27 +14,53 @@
 
     <div class="container">
         <div class="blocks-palette">
-            <div class="block block-assignment" draggable="true" ondragstart="move(event)">Присваивание</div>
-            <div class="block block-operation" draggable="true" ondragstart="move(event)">число + число</div>
-            <div class="block block-operation" draggable="true" ondragstart="move(event)">число - число</div>
-            <div class="block block-operation" draggable="true" ondragstart="move(event)">число * число</div>
-            <div class="block block-operation" draggable="true" ondragstart="move(event)">число / число</div>
-            <div class="block block-condition" draggable="true" ondragstart="move(event)">Если то</div>
-        </div>
-        <div class="block-zone" 
-             ondragover="event.preventDefault()" 
-             ondrop="drop(event)"
-             id="block_zone">
-        </div>
-        <div class="output-panel">
-            <button class="run-button" onclick="runCode()">Запустить</button>
-            <div class="output-area" id="output_area">
-                <p>Результат:</p>
-                <div id="result_display"></div>
+            <!-- Присваивание -->
+            <div class="block block-assignment" draggable="true" data-type="assignment" ondragstart="move(event)">
+                <input type="text" class="var-name" placeholder="переменная" value="x">
+                =
+                <input type="number" class="var-value" value="0">
             </div>
+
+            <!-- Арифметический блок -->
+            <div class="block block-operation" draggable="true" data-type="operation" ondragstart="move(event)">
+                <input type="number" class="left" value="0">
+                <select class="operator">
+                    <option value="add">+</option>
+                    <option value="subtract">-</option>
+                    <option value="multiply">*</option>
+                    <option value="divide">/</option>
+                </select>
+                <input type="number" class="right" value="0">
+            </div>
+
+            <!-- Блок условия -->
+            <div class="block block-condition" draggable="true" data-type="condition" ondragstart="move(event)">
+                если
+                <input type="number" class="left" value="0">
+                <select class="comparison">
+                    <option value="eq">==</option>
+                    <option value="neq">!=</option>
+                    <option value="gt">
+                        <= </option>
+                    <option value="gte"> >= </option>
+                </select>
+                <input type="number" class="right" value="0">
+                то
+            </div>
+        </div>
+        <div class="block-zone" ondragover="event.preventDefault()" ondrop="drop(event)" id="block_zone">
+        </div>
+    </div>
+
+    <div class="output-panel">
+        <button class="run-button" onclick="runCode()">Запустить</button>
+        <div class="output-area" id="output_area">
+            <p>Результат:</p>
+            <div id="result_display"></div>
         </div>
     </div>
 
     <script src="script_1.js"></script>
 </body>
+
 </html>
