@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Blokcode</title>
     <link rel="stylesheet" href="lable.css">
 </head>
-
 <body>
     <header>
         <h1>Blokcode</h1>
@@ -14,39 +12,55 @@
 
     <div class="container">
         <div class="blocks-palette">
-            <div class="block block-assignment" draggable="true" data-type="assignment" ondragstart="move(event)">
-                <input type="text" class="var-name" placeholder="переменная" value="x">
-                =
-                <input type="number" class="var-value" value="">
+            <div class="block block-declaration" draggable="true" data-type="declaration" ondragstart="move(event)">
+                int <span contenteditable="true" class="var-list">x, y</span>
             </div>
-
+            <div class="block block-assignment" draggable="true" data-type="assign" ondragstart="move(event)">
+                set <span contenteditable="true" class="var-name">x</span> =
+                <div class="slot expr-slot" data-accept="expression"></div>
+            </div>
             <div class="block block-operation" draggable="true" data-type="operation" ondragstart="move(event)">
-                <input type="number" class="left" value="">
+                <div class="slot left-slot" data-accept="expression"></div>
                 <select class="operator">
                     <option value="add">+</option>
                     <option value="subtract">-</option>
                     <option value="multiply">*</option>
                     <option value="divide">/</option>
+                    <option value="mod">%</option>
                 </select>
-                <input type="number" class="right" value="">
+                <div class="slot right-slot" data-accept="expression"></div>
             </div>
+            <div class="block block-number" draggable="true" data-type="number" ondragstart="move(event)">
+                <span contenteditable="true" class="number-value">0</span>
+            </div>
+            <div class="block block-variable" draggable="true" data-type="variable" ondragstart="move(event)">
+                <span contenteditable="true" class="var-name">x</span>
+            </div>
+            <div class="block block-condition" draggable="true" data-type="if" ondragstart="move(event)">
+                <div class="condition-row">
+                    <div class="slot left-slot" data-accept="expression"></div>
+                    <select class="comparison">
+                        <option value="eq">==</option>
+                        <option value="neq">!=</option>
+                        <option value="gt">></option>
+                        <option value="lt"><</option>
+                        <option value="gte">>=</option>
+                        <option value="lte"><=</option>
+                    </select>
+                    <div class="slot right-slot" data-accept="expression"></div>
+                </div>
+                <div class="then-block">
+                    <strong>then:</strong>
+                    <div class="slot then-slot" data-accept="statement"></div>
+                </div>
+                <div class="else-block">
+                    <strong>else:</strong>
+                    <div class="slot else-slot" data-accept="statement"></div>
+                </div>
+            </div>
+        </div>
 
-            <div class="block block-condition" draggable="true" data-type="condition" ondragstart="move(event)">
-                если
-                <input type="number" class="left" value="">
-                <select class="comparison">
-                    <option value="eq">==</option>
-                    <option value="neq">!=</option>
-                    <option value="gt">
-                        <= </option>
-                    <option value="gte"> >= </option>
-                </select>
-                <input type="number" class="right" value="">
-                то
-            </div>
-        </div>
-        <div class="block-zone" ondragover="event.preventDefault()" ondrop="drop(event)" id="block_zone">
-        </div>
+        <div class="block-zone" ondragover="event.preventDefault()" ondrop="drop(event)" id="block_zone"></div>
     </div>
 
     <div class="output-panel">
@@ -59,5 +73,4 @@
 
     <script src="script_1.js"></script>
 </body>
-
 </html>
