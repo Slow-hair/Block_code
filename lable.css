@@ -130,3 +130,21 @@ h1 {
     white-space: pre-wrap;
     word-wrap: break-word;
 }
+
+.slot {
+    min-width: 50px;
+    min-height: 20px;
+    border: 3px dashed #777;
+    border-radius: 60px;
+    margin: 3px;
+    padding: 4px;
+    background-color: #2a2a2a;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.then-slot, .else-slot {
+    display: block;
+    min-height: 45px;
+    width: 95%;    
+}
