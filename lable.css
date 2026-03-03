@@ -60,9 +60,15 @@ h1 {
     cursor: grabbing;
 }
 
+
+.block-declaration { border-left: 5px solid #9c27b0; }
 .block-assignment { border-left: 5px solid #64b5f6; }
 .block-operation { border-left: 5px solid #81c784; }
+.block-number { border-left: 5px solid #ffb74d; }
+.block-string { border-left: 5px solid #ff8a65; }
+.block-variable { border-left: 5px solid #4fc3f7; }
 .block-condition { border-left: 5px solid #ff8a65; }
+.block-output { border-left: 5px solid #e57373; }
 
 .block-zone {
     flex: 1;
@@ -133,18 +139,19 @@ h1 {
 
 .slot {
     min-width: 50px;
-    min-height: 20px;
-    border: 3px dashed #777;
-    border-radius: 60px;
-    margin: 3px;
-    padding: 4px;
+    min-height: 30px;
+    border: 2px dashed #777;
+    border-radius: 8px;
+    margin: 5px;
+    padding: 5px;
     background-color: #2a2a2a;
     display: inline-block;
     vertical-align: middle;
 }
 
+
 .then-slot, .else-slot {
     display: block;
     min-height: 45px;
-    width: 95%;    
+    width: 94%;
 }

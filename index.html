@@ -33,6 +33,9 @@
             <div class="block block-number" draggable="true" data-type="number" ondragstart="move(event)">
                 <span contenteditable="true" class="number-value">0</span>
             </div>
+            <div class="block block-string" draggable="true" data-type="string" ondragstart="move(event)">
+                <span contenteditable="true" class="string-value">введите текст</span>
+            </div>
             <div class="block block-variable" draggable="true" data-type="variable" ondragstart="move(event)">
                 <span contenteditable="true" class="var-name">x</span>
             </div>
@@ -57,6 +60,10 @@
                     <strong>else:</strong>
                     <div class="slot else-slot" data-accept="statement"></div>
                 </div>
+            </div>
+            <div class="block block-output" draggable="true" data-type="output" ondragstart="move(event)">
+                вывод:
+                <div class="slot expr-slot" data-accept="expression"></div>
             </div>
         </div>
 
