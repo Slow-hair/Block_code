@@ -27,6 +27,20 @@ function drop(event) {
     }
 }
 
+function clearErrors() {
+    document.querySelectorAll('.block.error').forEach(block => {
+        block.classList.remove('error');
+    });
+}
+
+function getBlockInSlot(slot) {
+    return slot.querySelector('.block');
+}
+
+function getBlocksInSlot(slot) {
+    return slot.querySelectorAll('.block');
+}
+
 function runCode() {
     const blockZone = document.getElementById('block_zone');
     const resultDisplay = document.getElementById('result_display');
