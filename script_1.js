@@ -44,128 +44,136 @@ function getBlocksInSlot(slot) {
 function runCode() {
     const blockZone = document.getElementById('block_zone');
     const resultDisplay = document.getElementById('result_display');
-
     resultDisplay.innerHTML = '';
+    clearErrors();
 
-    const blocks = blockZone.children;
+    const variable = {};
 
-    if (blocks.length === 0) {
-        resultDisplay.innerHTML = 'Где блоки?';
-        return;
-    }
+    function calculations(block) {
+        if (!block) throw { message: 'Где блоки?', block: null };
 
-    function checkCondition(conditionText) {
-        conditionText = conditionText.replace(/\s/g, '');
-        const operators = ['>=', '<=', '>', '<', '==', '!='];
-        
-        for (let op of operators) {
-            if (conditionText.includes(op)) {
-                const parts = conditionText.split(op);
-                if (parts.length === 2) {
-                    const first = parts[0];
-                    const second = parts[1];
+        const type = block.dataset.type;
+        if (type === 'number') {
+            const text = block.querySelector('.number-value').textContent.trim();
+            const number = parseInt(text, 10);
+            if (isNaN(number)) throw { message: 'Это даже не число', block };
+            return number;
+        }
+        if (type === 'variable') {
+            const name = block.querySelector('.var-name').textContent.trim();
+            if (!(name in variable)) throw { message: `Переменная "${name}" не объявлена`, block };
+            return variable[name];
+        }
+        if (type === 'operation') {
+            const firstSlot = block.querySelector('.left-slot');
+            const secondSlot = block.querySelector('.right-slot');
+            const firstBlock = getBlockInSlot(firstSlot);
+            const secondBlock = getBlockInSlot(secondSlot);
+            if (!firstBlock || !secondBlock) throw { message: 'Задайте-ка все операнды', block };
 
-                    const firstNumber = parseFloat(first);
-                    const secondNumber = parseFloat(second);
-                    
-                    if (!isNaN(firstNumber) && !isNaN(secondNumber)) {
-                        switch(op) {
-                            case '>': return firstNumber > secondNumber;
-                            case '<': return firstNumber < secondNumber;
-                            case '>=': return firstNumber >= secondNumber;
-                            case '<=': return firstNumber <= secondNumber;
-                            case '==': return firstNumber === secondNumber;
-                            case '!=': return firstNumber !== secondNumber;
-                        }
-                    } else {
-                        switch(op) {
-                            case '==': return first === second;
-                            case '!=': return first !== second;
-                        }
-                    }
-                }
+            const firstValue = calculations(firstBlock);
+            const secondValue = calculations(secondBlock);
+            const op = block.querySelector('.operator').value;
+
+            switch (op) {
+                case 'add': return firstValue + secondValue;
+                case 'subtract': return firstValue - secondValue;
+                case 'multiply': return firstValue * secondValue;
+                case 'divide':
+                    if (secondValue === 0) throw { message: 'Деление на ноль так-то', block };
+                    return Math.trunc(firstValue / secondValue);
+                case 'mod':
+                    if (secondValue === 0) throw { message: 'Что осталось от деления', block };
+                    return firstValue % secondValue;
+                default: throw { message: `Не знаем такую операцию ${op}`, block };
             }
         }
-        
-        if (conditionText === 'true') return true;
-        if (conditionText === 'false') return false;
-        
-        const number = parseFloat(conditionText);
-        if (!isNaN(number)) return number !== 0;
-        
-        return false;
+        throw { message: `Блок не выражение: ${type}`, block };
     }
 
-    function processBlock(block) {
-        const blockType = block.dataset.type;
-        if (blockType === 'condition') {
-            const firstInput = block.querySelector('.left');
-            const comparisonSelect = block.querySelector('.comparison');
-            const secondInput = block.querySelector('.right');
-            
-            if (firstInput && comparisonSelect && secondInput) {
-                const firstValue = firstInput.value;
-                const secondValue = secondInput.value;
-                const operator = comparisonSelect.value;
-                
-                let opSymbol = '';
-                switch(operator) {
-                    case 'eq': opSymbol = '=='; break;
-                    case 'neq': opSymbol = '!='; break;
-                    case 'gt': opSymbol = '>'; break;
-                    case 'gte': opSymbol = '>='; break;
-                    case 'lt': opSymbol = '<'; break;
-                    case 'lte': opSymbol = '<='; break;
-                }
-                
-                const conditionString = `${firstValue}${opSymbol}${secondValue}`;
-                const conditionResult = checkCondition(conditionString);
-                
-                resultDisplay.innerHTML += `Условие "${firstValue} ${opSymbol} ${secondValue}" = ${conditionResult}<br>`;
-                
-                if (conditionResult) {
-                    resultDisplay.innerHTML += `  → ПРАВДА ВЕДЬ<br>`;
+    function startBlock(block) {
+        if (!block) return;
+        const type = block.dataset.type;
 
-                } else {
-                    resultDisplay.innerHTML += `  → ДА ЭТО ЛОЖЬ<br>`;
+        try {
+            if (type === 'declaration') {
+                const text = block.querySelector('.var-list').textContent.trim();
+                const names = text.split(',').map(s => s.trim());
+                names.forEach(name => {
+                    if (!name) return;
+                    if (name in variable) throw { message: `Переменная "${name}" уже объявлена`, block };
+                    variable[name] = 0;
+                });
+            }
+            else if (type === 'assign') {
+                const varibleName = block.querySelector('.var-name').textContent.trim();
+                if (!(varibleName in variable)) throw { message: `Переменная "${varibleName}" не объявлена`, block };
+
+                const expressionSlot = block.querySelector('.expr-slot');
+                const exprBlock = getBlockInSlot(expressionSlot);
+                if (!exprBlock) throw { message: 'Выражение для присваивания где?', block };
+
+                const value = calculations(exprBlock);
+                variable[varibleName] = value;
+            }
+            else if (type === 'output') {
+                const expressionSlot = block.querySelector('.expr-slot');
+                const expressionBlock  = getBlockInSlot(expressionSlot );
+                if (!expressionBlock ) throw { message: 'Выражение для вывода где?', block };
+
+                const value = calculations(expressionBlock );
+                resultDisplay.innerHTML += `Вывод: ${value}<br>`;
+            }
+            else if (type === 'if') {
+                const firstSlot = block.querySelector('.left-slot');
+                const secondSlot = block.querySelector('.right-slot');
+                const firstBlock = getBlockInSlot(firstSlot);
+                const secondBlock = getBlockInSlot(secondSlot);
+                if (!firstBlock || !secondBlock) throw { message: 'Где выражения для условия?', block };
+
+                const firstVal = calculations(firstBlock);
+                const secondVal = calculations(secondBlock);
+                const comparsions = block.querySelector('.comparison').value;
+
+                let condition;
+                switch (comparsions) {
+                    case 'eq': condition = firstVal === secondVal; break;
+                    case 'neq': condition = firstVal !== secondVal; break;
+                    case 'gt': condition = firstVal > secondVal; break;
+                    case 'lt': condition = firstVal < secondVal; break;
+                    case 'gte': condition = firstVal >= secondVal; break;
+                    case 'lte': condition = firstVal <= secondVal; break;
+                    default: throw { message: `Не знаем такой оператор сравнения: ${comparsions}`, block };
+                }
+
+                const thenSlot = block.querySelector('.then-slot');
+                const elseSlot = block.querySelector('.else-slot');
+                const targetSlot = condition ? thenSlot : elseSlot;
+
+                const inBlocks = getBlocksInSlot(targetSlot);
+                for (let innerBlock of inBlocks) {
+                    startBlock(innerBlock);
                 }
             }
-        } 
-        else if (blockType === 'operation') {
-            const firstInput = block.querySelector('.left');
-            const operatorSelect = block.querySelector('.operator');
-            const secondInput = block.querySelector('.right');
-            
-            if (firstInput && operatorSelect && secondInput) {
-                const firstValue = parseFloat(firstInput.value);
-                const secondValue = parseFloat(secondInput.value);
-                const operator = operatorSelect.value;
-
-                if (Number(firstValue) === firstValue && Number(secondValue) === secondValue &&
-                    isFinite(firstValue) && isFinite(secondValue)) {
-
-                    let result;
-                    switch(operator) {
-                        case 'add': result = firstValue + secondValue; break;
-                        case 'subtract': result = firstValue - secondValue; break;
-                        case 'multiply': result = firstValue * secondValue; break;
-                        case 'divide': 
-                            if (secondValue !== 0) result = firstValue / secondValue;
-                            else result = 'НА НОЛЬ НЕ ДЕЛИМ';
-                            break;
-                    }
-                    resultDisplay.innerHTML += `  → получается: ${result}<br>`;
-                } else {
-                    resultDisplay.innerHTML += `  → не берем такое<br>`;
-                }
+        } catch (e) {
+            if (e.block) e.block.classList.add('error');
+            throw e;
+        }
+    }
+    const basicBlocks = blockZone.children;
+    for (let block of basicBlocks) {
+        if (block.classList.contains('block')) {
+            try {
+                startBlock(block);
+            } catch (e) {
+                resultDisplay.innerHTML += `Ошибка: ${e.message}<br>`;
+                if (e.block) e.block.classList.add('error');
+                break;
             }
-        } else {
-            const text = block.textContent.trim().replace(/\s+/g, ' ');
-            resultDisplay.innerHTML += `Выполняем: ${text}<br>`;
         }
     }
 
-    for (let i = 0; i < blocks.length; i++) {
-        processBlock(blocks[i]);
+    if (resultDisplay.innerHTML === '') {
+        resultDisplay.innerHTML = 'ВСЕ УСПЕШНО!';
     }
 }

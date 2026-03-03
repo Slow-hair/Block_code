@@ -60,7 +60,6 @@ h1 {
     cursor: grabbing;
 }
 
-
 .block-declaration { border-left: 5px solid #9c27b0; }
 .block-assignment { border-left: 5px solid #64b5f6; }
 .block-operation { border-left: 5px solid #81c784; }
@@ -148,7 +147,6 @@ h1 {
     display: inline-block;
     vertical-align: middle;
 }
-
 
 .then-slot, .else-slot {
     display: block;
