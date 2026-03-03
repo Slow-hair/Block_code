@@ -5,23 +5,25 @@ function move(event) {
 function drop(event) {
     event.preventDefault();
 
-    let html = event.dataTransfer.getData('text/plain');
-    let temp = document.createElement('div');
+    const html = event.dataTransfer.getData('text/plain');
+    const temp = document.createElement('div');
     temp.innerHTML = html;
-    let new_block = temp.firstChild;
+    const newBlock = temp.firstChild;
 
-    new_block.removeAttribute('draggable');
-    new_block.style.cursor = 'default';
+    newBlock.removeAttribute('draggable');
+    newBlock.style.cursor = 'default';
 
-    let target = event.target;
+    const target = event.target;
+    const slot = target.closest('.slot');
 
-    if (target.id == 'block_zone') {
-        target.appendChild(new_block);
+    if (slot) {
+        while (slot.firstChild) {
+            slot.removeChild(slot.firstChild);
+        }
+        slot.appendChild(newBlock);
     } else {
-        let box = document.createElement('div');
-        box.style.marginLeft = '20px';
-        box.appendChild(new_block);
-        target.appendChild(box);
+        const zone = document.getElementById('block_zone');
+        zone.appendChild(newBlock);
     }
 }
 
