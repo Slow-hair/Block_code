@@ -59,6 +59,10 @@ function runCode() {
             if (isNaN(number)) throw { message: 'Это даже не число', block };
             return number;
         }
+            if (type === 'string') {
+        const text = block.querySelector('.string-value').textContent.trim();
+        return text;
+        }
         if (type === 'variable') {
             const name = block.querySelector('.var-name').textContent.trim();
             if (!(name in variable)) throw { message: `Переменная "${name}" не объявлена`, block };
@@ -76,7 +80,10 @@ function runCode() {
             const op = block.querySelector('.operator').value;
 
             switch (op) {
-                case 'add': return firstValue + secondValue;
+                case 'add':
+                     if (typeof firstValue === 'string' || typeof secondValue === 'string') {
+                        return String(firstValue) + String(secondValue);
+                     }
                 case 'subtract': return firstValue - secondValue;
                 case 'multiply': return firstValue * secondValue;
                 case 'divide':
