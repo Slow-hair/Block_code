@@ -1,29 +1,69 @@
 function move(event) {
-    event.dataTransfer.setData('text/plain', event.target.outerHTML);
+    const block = event.target.closest('.block');
+    if (block) {
+        const isFromLeftPanel = block.closest('.blocks-palette') !== null;
+        if (isFromLeftPanel) {
+            event.dataTransfer.setData('text/plain', block.outerHTML);
+            event.dataTransfer.effectAllowed = 'copy';
+        } else {
+            if (!block.id) {
+                block.id = 'block_' + Date.now() + '_' + Math.random();
+            }
+            event.dataTransfer.setData('text/plain', block.id);
+            event.dataTransfer.effectAllowed = 'move';
+        }
+    }
 }
 
 function drop(event) {
     event.preventDefault();
+    
+    const someInfo = event.dataTransfer.getData('text/plain');
+    const whatIsObject = event.target;
+    const targetSlot = whatIsObject.closest('.slot');
+    const targetZone = whatIsObject.closest('#block_zone');
+    
+    let draggedBlock = document.getElementById(someInfo);
+    
+    if (!draggedBlock) {
+        const temp = document.createElement('div');
+        temp.innerHTML = someInfo;
+        const newBlock = temp.firstChild;
 
-    const html = event.dataTransfer.getData('text/plain');
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
-    const newBlock = temp.firstChild;
-
-    newBlock.removeAttribute('draggable');
-    newBlock.style.cursor = 'default';
-
-    const target = event.target;
-    const slot = target.closest('.slot');
-
-    if (slot) {
-        while (slot.firstChild) {
-            slot.removeChild(slot.firstChild);
+        newBlock.removeAttribute('draggable');
+        newBlock.style.cursor = 'default';
+        newBlock.setAttribute('draggable', 'true');
+        newBlock.ondragstart = move;
+        
+        newBlock.id = 'block_' + Date.now() + '_' + Math.random();
+        
+        if (targetSlot) {
+            while (targetSlot.firstChild) {
+                targetSlot.removeChild(targetSlot.firstChild);
+            }
+            targetSlot.appendChild(newBlock);
+        } else if (targetZone) {
+            targetZone.appendChild(newBlock);
         }
-        slot.appendChild(newBlock);
-    } else {
-        const zone = document.getElementById('block_zone');
-        zone.appendChild(newBlock);
+    } 
+    else {
+
+        if (targetSlot && targetSlot.contains(draggedBlock)) {
+            return;
+        }
+        
+        draggedBlock.remove();
+        
+        if (targetSlot) {
+            while (targetSlot.firstChild) {
+                targetSlot.removeChild(targetSlot.firstChild);
+            }
+            targetSlot.appendChild(draggedBlock);
+        } else if (targetZone) {
+            targetZone.appendChild(draggedBlock);
+        } else {
+            document.getElementById('block_zone').appendChild(draggedBlock);
+        }
     }
 }
 
@@ -212,3 +252,10 @@ function runCode() {
         resultDisplay.innerHTML = 'ВСЕ УСПЕШНО!';
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.block-zone .block').forEach(block => {
+        block.setAttribute('draggable', 'true');
+        block.ondragstart = move;
+    });
+});
