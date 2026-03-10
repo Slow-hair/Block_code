@@ -41,11 +41,38 @@ function getBlocksInSlot(slot) {
     return slot.querySelectorAll('.block');
 }
 
+function mismatchOperations() {
+    const blockZone = document.getElementById('block_zone');
+    let hasError = false;
+    
+    const operationBlocks = blockZone.querySelectorAll('.block-operation');
+    
+    operationBlocks.forEach(block => {
+        const firstSlot = block.querySelector('.left-slot');
+        const secondSlot = block.querySelector('.right-slot');
+        const firstBlock = getBlockInSlot(firstSlot);
+        const secondBlock = getBlockInSlot(secondSlot);
+        
+        if (!firstBlock || !secondBlock) {
+            block.classList.add('error');
+            hasError = true;
+        }
+    });
+    
+    return hasError;
+}
+
 function runCode() {
     const blockZone = document.getElementById('block_zone');
     const resultDisplay = document.getElementById('result_display');
     resultDisplay.innerHTML = '';
     clearErrors();
+    
+    const OperationErr = mismatchOperations();
+    if (OperationErr) {
+        resultDisplay.innerHTML = 'Нет некоторых операндов';
+        return;
+    }
 
     const variable = {};
 
@@ -80,10 +107,11 @@ function runCode() {
             const op = block.querySelector('.operator').value;
 
             switch (op) {
-                case 'add':
-                     if (typeof firstValue === 'string' || typeof secondValue === 'string') {
-                        return String(firstValue) + String(secondValue);
-                     }
+               case 'add':
+    if (typeof firstValue === 'string' || typeof secondValue === 'string') {
+        return String(firstValue) + String(secondValue);
+    }
+    return firstValue + secondValue;
                 case 'subtract': return firstValue - secondValue;
                 case 'multiply': return firstValue * secondValue;
                 case 'divide':
