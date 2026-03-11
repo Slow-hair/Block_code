@@ -20,6 +20,11 @@ function drop(event) {
     
     const someInfo = event.dataTransfer.getData('text/plain');
     const whatIsObject = event.target;
+
+    if (whatIsObject.closest('.blocks-palette')) {
+    return;
+    }
+
     const targetSlot = whatIsObject.closest('.slot');
     const targetZone = whatIsObject.closest('#block_zone');
     
@@ -64,6 +69,15 @@ function drop(event) {
         } else {
             document.getElementById('block_zone').appendChild(draggedBlock);
         }
+    }
+}
+
+function dropOnLeftZone(event) {
+    event.preventDefault();
+    const blockId = event.dataTransfer.getData("text/plain");
+    const draggedBlock = document.getElementById(blockId);
+    if (draggedBlock) {
+        draggedBlock.remove();
     }
 }
 
