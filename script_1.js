@@ -98,9 +98,32 @@ function mismatchOperations() {
             hasError = true;
         }
     });
-    
+
+    const whileBlocks = blockZone.querySelectorAll('.block-while');
+    whileBlocks.forEach(block => {
+        const conditionSlot = block.querySelector('.condition-slot');
+        const conditionBlock = getBlockInSlot(conditionSlot);
+
+        if (!conditionBlock) {
+            block.classList.add('error');
+            hasError = true;
+        }
+    });
+
+    const forBlocks = blockZone.querySelectorAll('.block-for');
+    forBlocks.forEach(block => {
+        const conditionSlot = block.querySelector('.condition-slot');
+        const conditionBlock = getBlockInSlot(conditionSlot);
+
+        if (!conditionBlock) {
+            block.classList.add('error');
+            hasError = true;
+        }
+    });
+
     return hasError;
 }
+const ITERATIONS = 10000;
 
 function runCode() {
     const blockZone = document.getElementById('block_zone');
@@ -228,6 +251,60 @@ function runCode() {
                 const inBlocks = getBlocksInSlot(targetSlot);
                 for (let innerBlock of inBlocks) {
                     startBlock(innerBlock);
+                }
+            }
+            else if (type === 'while') {
+                const conditionSlot = block.querySelector('.condition-slot');
+                const bodySlot = block.querySelector('.body-slot');
+                
+                const conditionBlock = getBlockInSlot(conditionSlot);
+                if (!conditionBlock) throw { message: 'Отсутствует условие цикла while', block };
+                
+                const bodyBlocks = getBlocksInSlot(bodySlot);
+                
+                let iterations = 0;
+                while (true) {
+                    if (iterations++ >= ITERATIONS) {
+                        throw { message: 'БЕСКОНЕЧНОСТЬ НЕ ПРЕДЕЕЕЕЕЛ!!!', block };
+                    }
+                    
+                    const conditionValue = calculations(conditionBlock);
+                    if (!conditionValue) break;
+                    
+                    for (let innerBlock of bodyBlocks) {
+                        startBlock(innerBlock);
+                    }
+                }
+            }
+            else if (type === 'for') {
+                const initSlot = block.querySelector('.init-slot');
+                const conditionSlot = block.querySelector('.condition-slot');
+                const stepSlot = block.querySelector('.step-slot');
+                const bodySlot = block.querySelector('.body-slot');
+                
+                const initBlock = getBlockInSlot(initSlot);
+                if (initBlock) {
+                    startBlock(initBlock);
+                }
+                
+                const conditionBlock = getBlockInSlot(conditionSlot);
+                if (!conditionBlock) throw { message: 'Отсутствует условие цикла for', block };
+                
+                const stepBlock = getBlockInSlot(stepSlot);
+                const bodyBlocks = getBlocksInSlot(bodySlot);
+                
+                let iterations = 0;
+                while (true) {  
+                    const conditionValue = calculations(conditionBlock);
+                    if (!conditionValue) break;
+                    
+                    for (let innerBlock of bodyBlocks) {
+                        startBlock(innerBlock);
+                    }
+                    
+                    if (stepBlock) {
+                        startBlock(stepBlock);
+                    }
                 }
             }
         } catch (e) {
