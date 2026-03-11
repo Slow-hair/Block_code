@@ -5,6 +5,7 @@
     <title>Blokcode</title>
     <link rel="stylesheet" href="lable.css">
 </head>
+
 <body>
     <header>
         <h1>Blokcode</h1>
@@ -65,7 +66,24 @@
                 вывод:
                 <div class="slot expr-slot" data-accept="expression"></div>
             </div>
+            <div class="block block-while" draggable="true" data-type="while" ondragstart="move(event)">
+                <div>пока</div>
+                <div class="slot condition-slot" data-accept="expression"></div>
+                <div>выполнять</div>
+                <div class="slot body-slot" data-accept="statement"></div>
+            </div>
+            <div class="block block-for" draggable="true" data-type="for" ondragstart="move(event)">
+                <div>для</div>
+                <div class="slot init-slot" data-accept="statement">инициализация</div>
+                <div>пока</div>
+                <div class="slot condition-slot" data-accept="expression"></div>
+                <div>шаг</div>
+                <div class="slot step-slot" data-accept="statement"></div>
+                <div>выполнять</div>
+                <div class="slot body-slot" data-accept="statement"></div>
+            </div>
         </div>
+        
 
         <div class="block-zone" ondragover="event.preventDefault()" ondrop="drop(event)" id="block_zone"></div>
     </div>

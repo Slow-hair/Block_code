@@ -159,3 +159,5 @@ h1 {
     background-color: #5a2a2a;
     box-shadow: 0 0 5px #f44336;
 }
+.block-while { border-left: 5px solid #ffa726; }
+.block-for   { border-left: 5px solid #7e57c2; }
