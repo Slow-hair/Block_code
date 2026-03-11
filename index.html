@@ -14,13 +14,20 @@
     <div class="container">
         <div class="blocks-palette" ondragover="event.preventDefault()" ondrop="dropOnLeftZone(event)">
             <div class="block block-declaration" draggable="true" data-type="declaration" ondragstart="move(event)">
+                <div class="block-title">Объявление переменных</div>
                 int <span contenteditable="true" class="var-list">x, y</span>
             </div>
-            <div class="block block-assignment" draggable="true" data-type="assign" ondragstart="move(event)">
-                Присвоить <span contenteditable="true" class="var-name">x</span> =
-                <div class="slot expr-slot" data-accept="expression"></div>
-            </div>
+            
+       <div class="block block-assignment" draggable="true" data-type="assign" ondragstart="move(event)">
+    <div class="block-title">Присваивание</div>
+    <div class="assignment-row">
+        Присвоить <span contenteditable="true" class="var-name">x</span> =
+        <div class="slot expr-slot" data-accept="expression"></div>
+    </div>
+</div>
+            
             <div class="block block-operation" draggable="true" data-type="operation" ondragstart="move(event)">
+                <div class="block-title">Арифметика</div>
                 <div class="slot left-slot" data-accept="expression"></div>
                 <select class="operator">
                     <option value="add">+</option>
@@ -31,33 +38,43 @@
                 </select>
                 <div class="slot right-slot" data-accept="expression"></div>
             </div>
+            
+            <div class="block block-condition-expr" draggable="true" data-type="condition" ondragstart="move(event)">
+                <div class="block-title">Блок условия</div>
+                <div class="condition-row">
+                    <div class="slot left-slot" data-accept="expression"></div>
+                    <select class="comparison">
+                        <option value="eq">==</option>
+                        <option value="neq">!=</option>
+                        <option value="gt">></option>
+                        <option value="lt"><</option>
+                        <option value="gte">>=</option>
+                        <option value="lte"><=</option>
+                    </select>
+                    <div class="slot right-slot" data-accept="expression"></div>
+                </div>
+            </div>
+            
             <div class="block block-number" draggable="true" data-type="number" ondragstart="move(event)">
+                <div class="block-title">Число</div>
                 <span contenteditable="true" class="number-value">0</span>
             </div>
-            <div class="block block-condition-expr" draggable="true" data-type="condition" ondragstart="move(event)">
-    <div class="condition-row">
-        <div class="slot left-slot" data-accept="expression"></div>
-        <select class="comparison">
-            <option value="eq">==</option>
-            <option value="neq">!=</option>
-            <option value="gt">></option>
-            <option value="lt"><</option>
-            <option value="gte">>=</option>
-            <option value="lte"><=</option>
-        </select>
-        <div class="slot right-slot" data-accept="expression"></div>
-    </div>
-</div>
+            
             <div class="block block-string" draggable="true" data-type="string" ondragstart="move(event)">
-                <span contenteditable="true" class="string-value">Введите текст </span>
+                <div class="block-title">Строка</div>
+                <span contenteditable="true" class="string-value">Введите текст</span>
             </div>
+            
             <div class="block block-variable" draggable="true" data-type="variable" ondragstart="move(event)">
+                <div class="block-title">Переменная</div>
                 <span contenteditable="true" class="var-name">x</span>
             </div>
+            
             <div class="block block-condition" draggable="true" data-type="if" ondragstart="move(event)">
-                 <div class="if-slot">
-               <strong>Если:</strong>
-             </div>
+                <div class="block-title">Условный оператор</div>
+                <div class="if-slot">
+                    <strong>Если:</strong>
+                </div>
                 <div class="condition-row">
                     <div class="slot left-slot" data-accept="expression"></div>
                     <select class="comparison">
@@ -79,17 +96,20 @@
                     <div class="slot else-slot" data-accept="statement"></div>
                 </div>
             </div>
+            
             <div class="block block-output" draggable="true" data-type="output" ondragstart="move(event)">
+                <div class="block-title">Вывод</div>
                 Вывод:
                 <div class="slot expr-slot" data-accept="expression"></div>
             </div>
+            
             <div class="block block-while" draggable="true" data-type="while" ondragstart="move(event)">
+                <div class="block-title">Цикл «Пока»</div>
                 <div>Пока:</div>
                 <div class="slot condition-slot" data-accept="expression"></div>
                 <div>Выполнять:</div>
                 <div class="slot body-slot" data-accept="statement"></div>
             </div>
-           
         </div>
         
         <div class="block-zone" ondragover="event.preventDefault()" ondrop="drop(event)" id="block_zone"></div>
@@ -97,6 +117,7 @@
 
     <div class="output-panel">
         <button class="run-button" onclick="runCode()">Запустить</button>
+        <button class="clear-button" onclick="clearBlockZone()">Очистить</button>
         <div class="output-area" id="output_area">
             <p>Результат:</p>
             <div id="result_display"></div>

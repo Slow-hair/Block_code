@@ -70,6 +70,15 @@ function drop(event) {
   }
 }
 
+function clearBlockZone() {
+    const blockZone = document.getElementById("block_zone");
+    const resultDisplay = document.getElementById("result_display");
+    blockZone.innerHTML = '';
+    resultDisplay.innerHTML = '';
+    clearErrors();
+    console.log("Очистка прошла");
+}
+
 function dropOnLeftZone(event) {
   event.preventDefault();
   const blockId = event.dataTransfer.getData("text/plain");
@@ -94,48 +103,51 @@ function getBlocksInSlot(slot) {
 }
 
 function mismatchOperations() {
-  const blockZone = document.getElementById("block_zone");
-  let hasError = false;
+    const blockZone = document.getElementById("block_zone");
+    let hasError = false;
+    let errorMessages = [];
 
-  const operationBlocks = blockZone.querySelectorAll(".block-operation");
+    const operationBlocks = blockZone.querySelectorAll(".block-operation");
+    operationBlocks.forEach((block) => {
+        const firstSlot = block.querySelector(".left-slot");
+        const secondSlot = block.querySelector(".right-slot");
+        const firstBlock = getBlockInSlot(firstSlot);
+        const secondBlock = getBlockInSlot(secondSlot);
 
-  operationBlocks.forEach((block) => {
-    const firstSlot = block.querySelector(".left-slot");
-    const secondSlot = block.querySelector(".right-slot");
-    const firstBlock = getBlockInSlot(firstSlot);
-    const secondBlock = getBlockInSlot(secondSlot);
+        if (!firstBlock || !secondBlock) {
+            block.classList.add("error");
+            hasError = true;
+            errorMessages.push("Не хватает операндов");
+        }
+    });
 
-    if (!firstBlock || !secondBlock) {
-      block.classList.add("error");
-      hasError = true;
-    }
-  });
+    const whileBlocks = blockZone.querySelectorAll(".block-while");
+    whileBlocks.forEach((block) => {
+        const conditionSlot = block.querySelector(".condition-slot");
+        const conditionBlock = getBlockInSlot(conditionSlot);
 
-  const whileBlocks = blockZone.querySelectorAll(".block-while");
-  whileBlocks.forEach((block) => {
-    const conditionSlot = block.querySelector(".condition-slot");
-    const conditionBlock = getBlockInSlot(conditionSlot);
+        if (!conditionBlock) {
+            block.classList.add("error");
+            hasError = true;
+            errorMessages.push("В цикле нет условия");
+        }
+    });
 
-    if (!conditionBlock) {
-      block.classList.add("error");
-      hasError = true;
-    }
-  });
+    const conditionBlocks = blockZone.querySelectorAll(".block-condition-expr");
+    conditionBlocks.forEach((block) => {
+        const leftSlot = block.querySelector(".left-slot");
+        const rightSlot = block.querySelector(".right-slot");
+        const leftBlock = getBlockInSlot(leftSlot);
+        const rightBlock = getBlockInSlot(rightSlot);
 
-  const conditionBlocks = blockZone.querySelectorAll(".block-condition-expr");
-  conditionBlocks.forEach((block) => {
-    const leftSlot = block.querySelector(".left-slot");
-    const rightSlot = block.querySelector(".right-slot");
-    const leftBlock = getBlockInSlot(leftSlot);
-    const rightBlock = getBlockInSlot(rightSlot);
+        if (!leftBlock || !rightBlock) {
+            block.classList.add("error");
+            hasError = true;
+            errorMessages.push("В блоке условия не хватает частей");
+        }
+    });
 
-    if (!leftBlock || !rightBlock) {
-      block.classList.add("error");
-      hasError = true;
-    }
-  });
-
-  return hasError;
+    return { hasError, messages: errorMessages };
 }
 const ITERATIONS = 10000;
 
@@ -146,10 +158,10 @@ function runCode() {
   clearErrors();
 
   const OperationErr = mismatchOperations();
-  if (OperationErr) {
-    resultDisplay.innerHTML = "Нет некоторых операндов";
+if (OperationErr.hasError) {
+    resultDisplay.innerHTML = OperationErr.messages.join("<br>");
     return;
-  }
+}
 
   const variable = {};
 
@@ -368,7 +380,7 @@ function runCode() {
   }
 
   if (resultDisplay.innerHTML === "") {
-    resultDisplay.innerHTML = "ВСЕ УСПЕШНО!";
+    resultDisplay.innerHTML = "Все хорошо, даже подозрительно...";
   }
 }
 
