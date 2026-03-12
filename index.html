@@ -17,15 +17,13 @@
                 <div class="block-title">Объявление переменных</div>
                 int <span contenteditable="true" class="var-list">x, y</span>
             </div>
-            
-       <div class="block block-assignment" draggable="true" data-type="assign" ondragstart="move(event)">
-    <div class="block-title">Присваивание</div>
-    <div class="assignment-row">
-        Присвоить <span contenteditable="true" class="var-name">x</span> =
-        <div class="slot expr-slot" data-accept="expression"></div>
-    </div>
-</div>
-            
+            <div class="block block-assignment" draggable="true" data-type="assign" ondragstart="move(event)">
+                <div class="block-title">Присваивание</div>
+                <div class="assignment-row">
+                    Присвоить <span contenteditable="true" class="var-name">x</span> =
+                    <div class="slot expr-slot" data-accept="expression"></div>
+                </div>
+            </div>
             <div class="block block-operation" draggable="true" data-type="operation" ondragstart="move(event)">
                 <div class="block-title">Арифметика</div>
                 <div class="slot left-slot" data-accept="expression"></div>
@@ -38,7 +36,6 @@
                 </select>
                 <div class="slot right-slot" data-accept="expression"></div>
             </div>
-            
             <div class="block block-condition-expr" draggable="true" data-type="condition" ondragstart="move(event)">
                 <div class="block-title">Блок условия</div>
                 <div class="condition-row">
