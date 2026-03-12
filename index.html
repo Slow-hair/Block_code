@@ -93,7 +93,19 @@
                     <div class="slot else-slot" data-accept="statement"></div>
                 </div>
             </div>
-            
+            <div class="block block-logic" draggable="true" data-type="logic" ondragstart="move(event)">
+                <div class="block-title">Логическая операция</div>
+                <div class="slot left-slot" data-accept="expression"></div>
+                <select class="logic-operator">
+                    <option value="and">AND</option>
+                    <option value="or">OR</option>
+                </select>
+                <div class="slot right-slot" data-accept="expression"></div>
+            </div>
+            <div class="block block-not" draggable="true" data-type="not" ondragstart="move(event)">
+                <div class="block-title">Отрицание</div>
+                NOT <div class="slot expr-slot" data-accept="expression"></div>
+            </div>
             <div class="block block-output" draggable="true" data-type="output" ondragstart="move(event)">
                 <div class="block-title">Вывод</div>
                 Вывод:

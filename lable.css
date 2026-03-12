@@ -30,7 +30,7 @@ h1 {
 }
 
 .blocks-palette {
-    width: 250px;
+    width: 310px;
     background-color: #2d2d2d;
     border: 1px solid #444;
     border-radius: 8px;
@@ -314,4 +314,34 @@ h1 {
     margin: 0;
     padding: 3px 5px;
     font-size: 12px;
+}
+
+.block-logic {
+    border-left: 5px solid #ba68c8;
+}
+.block-logic .block-title {
+    color: #ba68c8;
+}
+.block-not {
+    border-left: 5px solid #ffb74d;
+}
+.block-not .block-title {
+    color: #ffb74d;
+}
+.block-logic select.logic-operator {
+    background-color: #3a3a3a;
+    color: white;
+    border: 1px solid #666;
+    border-radius: 4px;
+    padding: 4px;
+    margin: 0 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.block-logic select.logic-operator:hover {
+    background-color: #4a4a4a;
+}
+.block-condition .condition-slot {
+    display: block;
+    margin: 5px 0;
 }
