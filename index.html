@@ -66,24 +66,10 @@
                 <div class="block-title">Переменная</div>
                 <span contenteditable="true" class="var-name">x</span>
             </div>
-            
             <div class="block block-condition" draggable="true" data-type="if" ondragstart="move(event)">
                 <div class="block-title">Условный оператор</div>
-                <div class="if-slot">
-                    <strong>Если:</strong>
-                </div>
-                <div class="condition-row">
-                    <div class="slot left-slot" data-accept="expression"></div>
-                    <select class="comparison">
-                        <option value="eq">==</option>
-                        <option value="neq">!=</option>
-                        <option value="gt">></option>
-                        <option value="lt"><</option>
-                        <option value="gte">>=</option>
-                        <option value="lte"><=</option>
-                    </select>
-                    <div class="slot right-slot" data-accept="expression"></div>
-                </div>
+                <div>Если:</div>
+                <div class="slot condition-slot" data-accept="expression"></div>
                 <div class="then-block">
                     <strong>Тогда:</strong>
                     <div class="slot then-slot" data-accept="statement"></div>
@@ -102,6 +88,7 @@
                 </select>
                 <div class="slot right-slot" data-accept="expression"></div>
             </div>
+
             <div class="block block-not" draggable="true" data-type="not" ondragstart="move(event)">
                 <div class="block-title">Отрицание</div>
                 NOT <div class="slot expr-slot" data-accept="expression"></div>

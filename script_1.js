@@ -158,10 +158,10 @@ function runCode() {
   clearErrors();
 
   const OperationErr = mismatchOperations();
-if (OperationErr.hasError) {
-    resultDisplay.innerHTML = OperationErr.messages.join("<br>");
-    return;
-}
+  if (OperationErr.hasError) {
+      resultDisplay.innerHTML = OperationErr.messages.join("<br>");
+      return;
+  }
 
   const variable = {};
 
@@ -253,6 +253,32 @@ if (OperationErr.hasError) {
           throw { message: `Не знаем такую операцию ${op}`, block };
       }
     }
+      if (type === "logic") {
+        const leftSlot = block.querySelector(".left-slot");
+        const rightSlot = block.querySelector(".right-slot");
+        const leftBlock = getBlockInSlot(leftSlot);
+        const rightBlock = getBlockInSlot(rightSlot);
+        if (!leftBlock || !rightBlock) {
+            throw { message: "Оба операнда должны быть заполнены", block };
+        }
+        const leftVal = calculations(leftBlock);
+        const rightVal = calculations(rightBlock);
+        const op = block.querySelector(".logic-operator").value;
+        const leftBool = Boolean(leftVal);
+        const rightBool = Boolean(rightVal);
+        if (op === "and") return leftBool && rightBool;
+        if (op === "or") return leftBool || rightBool;
+        throw { message: `Неизвестный логический оператор ${op}`, block };
+    }
+
+    if (type === "not") {
+        const exprSlot = block.querySelector(".expr-slot");
+        const exprBlock = getBlockInSlot(exprSlot);
+        if (!exprBlock) {
+            throw { message: "Не указано выражение для отрицания", block };
+        }
+        return !Boolean(calculations(exprBlock));
+    }
     throw { message: `Блок не выражение: ${type}`, block };
   }
 
@@ -291,50 +317,19 @@ if (OperationErr.hasError) {
         const value = calculations(expressionBlock);
         resultDisplay.innerHTML += `Вывод: ${value}<br>`;
       } else if (type === "if") {
-        const firstSlot = block.querySelector(".left-slot");
-        const secondSlot = block.querySelector(".right-slot");
-        const firstBlock = getBlockInSlot(firstSlot);
-        const secondBlock = getBlockInSlot(secondSlot);
-        if (!firstBlock || !secondBlock)
+        const conditionSlot = block.querySelector(".condition-slot");
+        const conditionBlock = getBlockInSlot(conditionSlot);
+        if (!conditionBlock)
           throw { message: "Где выражения для условия?", block };
 
-        const firstVal = calculations(firstBlock);
-        const secondVal = calculations(secondBlock);
-        const comparsions = block.querySelector(".comparison").value;
-
-        let condition;
-        switch (comparsions) {
-          case "eq":
-            condition = firstVal === secondVal;
-            break;
-          case "neq":
-            condition = firstVal !== secondVal;
-            break;
-          case "gt":
-            condition = firstVal > secondVal;
-            break;
-          case "lt":
-            condition = firstVal < secondVal;
-            break;
-          case "gte":
-            condition = firstVal >= secondVal;
-            break;
-          case "lte":
-            condition = firstVal <= secondVal;
-            break;
-          default:
-            throw {
-              message: `Не знаем такой оператор сравнения: ${comparsions}`,
-              block,
-            };
-        }
+        const conditionValue = Boolean(calculations(conditionBlock));
 
         const thenSlot = block.querySelector(".then-slot");
         const elseSlot = block.querySelector(".else-slot");
-        const targetSlot = condition ? thenSlot : elseSlot;
+        const targetSlot = conditionValue ? thenSlot : elseSlot;
 
-        const inBlocks = getBlocksInSlot(targetSlot);
-        for (let innerBlock of inBlocks) {
+        const innerBlocks = getBlocksInSlot(targetSlot);
+        for (let innerBlock of innerBlocks) {
           startBlock(innerBlock);
         }
       } else if (type === "while") {
