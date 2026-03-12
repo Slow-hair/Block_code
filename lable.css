@@ -345,3 +345,31 @@ h1 {
     display: block;
     margin: 5px 0;
 }
+
+.block-array-decl { border-left: 5px solid #a8e208; }
+.block-array-get { border-left: 5px solid #08e2ab; }
+.block-array-set { border-left: 5px solid #4063ff; }
+
+.block-array-decl .block-title { color: #a8e208; }
+.block-array-get .block-title { color: #08e2ab; }
+.block-array-set .block-title { color: #4063ff; }
+
+.array-name {
+    min-width: 40px;
+    display: inline-block;
+    background: #2a2a2a;
+    padding: 2px 5px;
+    border-radius: 4px;
+    border: 1px solid #666;
+    font-family: monospace;
+}
+
+.array-size {
+    min-width: 20px;
+    display: inline-block;
+    background: #2a2a2a;
+    padding: 2px 5px;
+    border-radius: 4px;
+    border: 1px solid #666;
+    font-family: monospace;
+}

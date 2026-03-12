@@ -89,6 +89,22 @@
                 <div class="slot right-slot" data-accept="expression"></div>
             </div>
 
+<div class="block block-array-decl" draggable="true" data-type="array-decl" ondragstart="move(event)">
+    <div class="block-title">Массив</div>
+    int[] <span contenteditable="true" class="array-name">arr</span> [<span contenteditable="true" class="array-size">5</span>]
+</div>
+<div class="block block-array-get" draggable="true" data-type="array-get" ondragstart="move(event)">
+    <div class="block-title">Элемент массива</div>
+    <span contenteditable="true" class="array-name">arr</span> [
+    <div class="slot index-slot" data-accept="expression"></div> ]
+</div>
+<div class="block block-array-set" draggable="true" data-type="array-set" ondragstart="move(event)">
+    <div class="block-title">Присвоить элементу</div>
+    <span contenteditable="true" class="array-name">arr</span> [
+    <div class="slot index-slot" data-accept="expression"></div> ] =
+    <div class="slot value-slot" data-accept="expression"></div>
+</div>
+
             <div class="block block-not" draggable="true" data-type="not" ondragstart="move(event)">
                 <div class="block-title">Отрицание</div>
                 NOT <div class="slot expr-slot" data-accept="expression"></div>

@@ -107,6 +107,25 @@ function mismatchOperations() {
     let hasError = false;
     let errorMessages = [];
 
+    const arrayGetBlocks = blockZone.querySelectorAll(".block-array-get");
+arrayGetBlocks.forEach(block => {
+    if (!getBlockInSlot(block.querySelector(".index-slot"))) {
+        block.classList.add("error");
+        hasError = true;
+        errorMessages.push("Нет индекса");
+    }
+});
+
+const arraySetBlocks = blockZone.querySelectorAll(".block-array-set");
+arraySetBlocks.forEach(block => {
+    if (!getBlockInSlot(block.querySelector(".index-slot")) || 
+        !getBlockInSlot(block.querySelector(".value-slot"))) {
+        block.classList.add("error");
+        hasError = true;
+        errorMessages.push("Нужны индекс и значение");
+    }
+});
+
     const operationBlocks = blockZone.querySelectorAll(".block-operation");
     operationBlocks.forEach((block) => {
         const firstSlot = block.querySelector(".left-slot");
@@ -164,6 +183,7 @@ function runCode() {
   }
 
   const variable = {};
+  const arrays = {};
 
   function calculations(block) {
     if (!block) throw { message: "Где блоки?", block: null };
@@ -185,6 +205,20 @@ function runCode() {
         throw { message: `Переменная "${name}" не объявлена`, block };
       return variable[name];
     }
+    if (type === "array-get") {
+    const name = block.querySelector(".array-name").textContent.trim();
+    const indexSlot = block.querySelector(".index-slot");
+    const indexBlock = getBlockInSlot(indexSlot);
+    
+    if (!indexBlock) throw { message: "Нет индекса", block };
+    if (!(name in arrays)) throw { message: `Массив ${name} не объявлен`, block };
+    
+    const index = calculations(indexBlock);
+    if (index < 0 || index >= arrays[name].length) {
+        throw { message: `Индекс ${index} вне границ`, block };
+    }
+    return arrays[name][index];
+  }
     if (type === "condition") {
       const firstSlot = block.querySelector(".left-slot");
       const secondSlot = block.querySelector(".right-slot");
@@ -308,7 +342,38 @@ function runCode() {
 
         const value = calculations(exprBlock);
         variable[varibleName] = value;
-      } else if (type === "output") {
+
+ } else if (type === "array-decl") {
+    const name = block.querySelector(".array-name").textContent.trim();
+    const sizeText = block.querySelector(".array-size").textContent.trim();
+    const size = parseInt(sizeText, 10);
+    
+    if (isNaN(size) || size <= 0) throw { message: "размер", block };
+    if (name in arrays) throw { message: `Массив ${name} уже есть`, block };
+    
+    arrays[name] = new Array(size).fill(0);
+}
+
+else if (type === "array-set") {
+    const name = block.querySelector(".array-name").textContent.trim();
+    const indexSlot = block.querySelector(".index-slot");
+    const valueSlot = block.querySelector(".value-slot");
+    const indexBlock = getBlockInSlot(indexSlot);
+    const valueBlock = getBlockInSlot(valueSlot);
+    
+    if (!indexBlock || !valueBlock) throw { message: "Нужны индекс и значение", block };
+    if (!(name in arrays)) throw { message: `Массив ${name} не найден`, block };
+    
+    const index = calculations(indexBlock);
+    const value = calculations(valueBlock);
+    
+    if (index < 0 || index >= arrays[name].length) {
+        throw { message: `Индекс ${index} переборщил`, block };
+    }
+    
+    arrays[name][index] = value;
+}
+        else if (type === "output") {
         const expressionSlot = block.querySelector(".expr-slot");
         const expressionBlock = getBlockInSlot(expressionSlot);
         if (!expressionBlock)
