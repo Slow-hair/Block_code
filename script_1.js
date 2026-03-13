@@ -15,58 +15,74 @@ function move(event) {
   }
 }
 
+function isExpressionBlock(block) {
+  const exprTypes = ['number', 'string', 'variable', 'operation', 'condition', 'logic', 'not', 'array-get'];
+  return exprTypes.includes(block.dataset.type);
+}
+
+function isStatementBlock(block) {
+  const statementTypes = ['declaration', 'assign', 'if', 'while', 'output', 'array-decl', 'array-set'];
+  return statementTypes.includes(block.dataset.type);
+}
+
 function drop(event) {
   event.preventDefault();
 
-  const someInfo = event.dataTransfer.getData("text/plain");
-  const whatIsObject = event.target;
+  const rawData = event.dataTransfer.getData("text/plain");
+  const target = event.target;
 
-  if (whatIsObject.closest(".blocks-palette")) {
+  if (target.closest(".blocks-palette")) {
     return;
   }
 
-  const targetSlot = whatIsObject.closest(".slot");
-  const targetZone = whatIsObject.closest("#block_zone");
+  const targetSlot = target.closest(".slot");
+  const targetZone = target.closest("#block_zone");
 
-  let draggedBlock = document.getElementById(someInfo);
+  let draggedBlock = document.getElementById(rawData);
+  let isCopy = false;
 
   if (!draggedBlock) {
     const temp = document.createElement("div");
-    temp.innerHTML = someInfo;
-    const newBlock = temp.firstChild;
+    temp.innerHTML = rawData;
+    draggedBlock = temp.firstChild;
+    isCopy = true;
+  }
 
-    newBlock.removeAttribute("draggable");
-    newBlock.style.cursor = "default";
-    newBlock.setAttribute("draggable", "true");
-    newBlock.ondragstart = move;
-
-    newBlock.id = "block_" + Date.now() + "_" + Math.random();
-
-    if (targetSlot) {
-      while (targetSlot.firstChild) {
-        targetSlot.removeChild(targetSlot.firstChild);
-      }
-      targetSlot.appendChild(newBlock);
-    } else if (targetZone) {
-      targetZone.appendChild(newBlock);
-    }
-  } else {
-    if (targetSlot && targetSlot.contains(draggedBlock)) {
+  if (targetSlot) {
+    const accept = targetSlot.dataset.accept;
+    if (accept === "expression" && !isExpressionBlock(draggedBlock)) {
+      console.warn("Где выражение????");
       return;
     }
+    if (accept === "statement" && !isStatementBlock(draggedBlock)) {
+      console.warn("Что мне с этим делать?");
+      return;
+    }
+  }
 
+  if (isCopy) {
+    draggedBlock.removeAttribute("draggable");
+    draggedBlock.style.cursor = "default";
+    draggedBlock.setAttribute("draggable", "true");
+    draggedBlock.ondragstart = move;
+    draggedBlock.id = "block_" + Date.now() + "_" + Math.random();
+  } else {
     draggedBlock.remove();
+  }
 
-    if (targetSlot) {
+  if (targetSlot) {
+    if (targetSlot.dataset.accept === "expression") {
       while (targetSlot.firstChild) {
         targetSlot.removeChild(targetSlot.firstChild);
       }
       targetSlot.appendChild(draggedBlock);
-    } else if (targetZone) {
-      targetZone.appendChild(draggedBlock);
     } else {
-      document.getElementById("block_zone").appendChild(draggedBlock);
+      targetSlot.appendChild(draggedBlock);
     }
+  } else if (targetZone) {
+    targetZone.appendChild(draggedBlock);
+  } else {
+    document.getElementById("block_zone").appendChild(draggedBlock);
   }
 }
 
@@ -108,23 +124,23 @@ function mismatchOperations() {
     let errorMessages = [];
 
     const arrayGetBlocks = blockZone.querySelectorAll(".block-array-get");
-arrayGetBlocks.forEach(block => {
-    if (!getBlockInSlot(block.querySelector(".index-slot"))) {
-        block.classList.add("error");
-        hasError = true;
-        errorMessages.push("Нет индекса");
-    }
-});
+    arrayGetBlocks.forEach(block => {
+        if (!getBlockInSlot(block.querySelector(".index-slot"))) {
+            block.classList.add("error");
+            hasError = true;
+            errorMessages.push("Нет индекса");
+        }
+    });
 
-const arraySetBlocks = blockZone.querySelectorAll(".block-array-set");
-arraySetBlocks.forEach(block => {
-    if (!getBlockInSlot(block.querySelector(".index-slot")) || 
-        !getBlockInSlot(block.querySelector(".value-slot"))) {
-        block.classList.add("error");
-        hasError = true;
-        errorMessages.push("Нужны индекс и значение");
-    }
-});
+    const arraySetBlocks = blockZone.querySelectorAll(".block-array-set");
+    arraySetBlocks.forEach(block => {
+        if (!getBlockInSlot(block.querySelector(".index-slot")) || 
+            !getBlockInSlot(block.querySelector(".value-slot"))) {
+            block.classList.add("error");
+            hasError = true;
+            errorMessages.push("Нужны индекс и значение!!!");
+        }
+    });
 
     const operationBlocks = blockZone.querySelectorAll(".block-operation");
     operationBlocks.forEach((block) => {
@@ -162,7 +178,31 @@ arraySetBlocks.forEach(block => {
         if (!leftBlock || !rightBlock) {
             block.classList.add("error");
             hasError = true;
-            errorMessages.push("В блоке условия не хватает частей");
+            errorMessages.push("В блоке условия не хватает чего-то)");
+        }
+    });
+
+    const logicBlocks = blockZone.querySelectorAll(".block-logic");
+    logicBlocks.forEach((block) => {
+        const leftSlot = block.querySelector(".left-slot");
+        const rightSlot = block.querySelector(".right-slot");
+        const leftBlock = getBlockInSlot(leftSlot);
+        const rightBlock = getBlockInSlot(rightSlot);
+        if (!leftBlock || !rightBlock) {
+            block.classList.add("error");
+            hasError = true;
+            errorMessages.push("Оба операнда должны быть заполнены!");
+        }
+    });
+
+    const notBlocks = blockZone.querySelectorAll(".block-not");
+    notBlocks.forEach((block) => {
+        const exprSlot = block.querySelector(".expr-slot");
+        const exprBlock = getBlockInSlot(exprSlot);
+        if (!exprBlock) {
+            block.classList.add("error");
+            hasError = true;
+            errorMessages.push("А что мне отрицать?");
         }
     });
 
@@ -187,7 +227,9 @@ function runCode() {
 
   function calculations(block) {
     if (!block) throw { message: "Где блоки?", block: null };
-
+    if (!isExpressionBlock(block)) {
+      throw { message: `Блок "${block.dataset.type}" не может быть выражением`, block };
+    }
     const type = block.dataset.type;
     if (type === "number") {
       const text = block.querySelector(".number-value").textContent.trim();
@@ -206,19 +248,23 @@ function runCode() {
       return variable[name];
     }
     if (type === "array-get") {
-    const name = block.querySelector(".array-name").textContent.trim();
-    const indexSlot = block.querySelector(".index-slot");
-    const indexBlock = getBlockInSlot(indexSlot);
-    
-    if (!indexBlock) throw { message: "Нет индекса", block };
-    if (!(name in arrays)) throw { message: `Массив ${name} не объявлен`, block };
-    
-    const index = calculations(indexBlock);
-    if (index < 0 || index >= arrays[name].length) {
+      const name = block.querySelector(".array-name").textContent.trim();
+      const indexSlot = block.querySelector(".index-slot");
+      const indexBlock = getBlockInSlot(indexSlot);
+      if (!indexBlock) throw { message: "Нет индекса", block };
+      if (!(name in arrays)) throw { message: `Массив ${name} не объявлен`, block };
+
+      const indexVal = calculations(indexBlock);
+      const index = Number(indexVal);
+      if (!Number.isInteger(index)) {
+        throw { message: `Индекс должен быть целым ${indexVal}`, block };
+      }
+
+      if (index < 0 || index >= arrays[name].length) {
         throw { message: `Индекс ${index} вне границ`, block };
+      }
+      return arrays[name][index];
     }
-    return arrays[name][index];
-  }
     if (type === "condition") {
       const firstSlot = block.querySelector(".left-slot");
       const secondSlot = block.querySelector(".right-slot");
@@ -264,10 +310,7 @@ function runCode() {
 
       switch (op) {
         case "add":
-          if (
-            typeof firstValue === "string" ||
-            typeof secondValue === "string"
-          ) {
+          if (typeof firstValue === "string" || typeof secondValue === "string") {
             return String(firstValue) + String(secondValue);
           }
           return firstValue + secondValue;
@@ -287,34 +330,37 @@ function runCode() {
           throw { message: `Не знаем такую операцию ${op}`, block };
       }
     }
-      if (type === "logic") {
-        const leftSlot = block.querySelector(".left-slot");
-        const rightSlot = block.querySelector(".right-slot");
-        const leftBlock = getBlockInSlot(leftSlot);
-        const rightBlock = getBlockInSlot(rightSlot);
-        if (!leftBlock || !rightBlock) {
-            throw { message: "Оба операнда должны быть заполнены", block };
-        }
-        const leftVal = calculations(leftBlock);
-        const rightVal = calculations(rightBlock);
-        const op = block.querySelector(".logic-operator").value;
-        const leftBool = Boolean(leftVal);
-        const rightBool = Boolean(rightVal);
-        if (op === "and") return leftBool && rightBool;
-        if (op === "or") return leftBool || rightBool;
-        throw { message: `Неизвестный логический оператор ${op}`, block };
-    }
+    if (type === "logic") {
+      const leftSlot = block.querySelector(".left-slot");
+      const rightSlot = block.querySelector(".right-slot");
+      const leftBlock = getBlockInSlot(leftSlot);
+      const rightBlock = getBlockInSlot(rightSlot);
+      if (!leftBlock || !rightBlock) {
+        throw { message: "Оба операнда должны быть заполнены", block };
+      }
+      const op = block.querySelector(".logic-operator").value;
+      const leftVal = calculations(leftBlock);
 
+      if (op === "and") {
+        if (!leftVal) return false;
+        return Boolean(calculations(rightBlock));
+      } else if (op === "or") {
+        if (leftVal) return true;
+        return Boolean(calculations(rightBlock));
+      }
+      throw { message: `Неизвестный логический оператор ${op}`, block };
+    }
     if (type === "not") {
-        const exprSlot = block.querySelector(".expr-slot");
-        const exprBlock = getBlockInSlot(exprSlot);
-        if (!exprBlock) {
-            throw { message: "Не указано выражение для отрицания", block };
-        }
-        return !Boolean(calculations(exprBlock));
+      const exprSlot = block.querySelector(".expr-slot");
+      const exprBlock = getBlockInSlot(exprSlot);
+      if (!exprBlock) {
+        throw { message: "Не указано выражение для отрицания", block };
+      }
+      const value = calculations(exprBlock);
+      return !value;
     }
     throw { message: `Блок не выражение: ${type}`, block };
-  }
+    }
 
   function startBlock(block) {
     if (!block) return;
@@ -342,38 +388,34 @@ function runCode() {
 
         const value = calculations(exprBlock);
         variable[varibleName] = value;
+      } else if (type === "array-decl") {
+        const name = block.querySelector(".array-name").textContent.trim();
+        const sizeText = block.querySelector(".array-size").textContent.trim();
+        const size = parseInt(sizeText, 10);
+        if (isNaN(size) || size <= 0) throw { message: "размер", block };
+        if (name in arrays) throw { message: `Массив ${name} уже есть`, block };
+        arrays[name] = new Array(size).fill(0);
+      } else if (type === "array-set") {
+        const name = block.querySelector(".array-name").textContent.trim();
+        const indexSlot = block.querySelector(".index-slot");
+        const valueSlot = block.querySelector(".value-slot");
+        const indexBlock = getBlockInSlot(indexSlot);
+        const valueBlock = getBlockInSlot(valueSlot);
+        if (!indexBlock || !valueBlock) throw { message: "Нужны индекс и значение", block };
+        if (!(name in arrays)) throw { message: `Массив ${name} не найден`, block };
 
- } else if (type === "array-decl") {
-    const name = block.querySelector(".array-name").textContent.trim();
-    const sizeText = block.querySelector(".array-size").textContent.trim();
-    const size = parseInt(sizeText, 10);
-    
-    if (isNaN(size) || size <= 0) throw { message: "размер", block };
-    if (name in arrays) throw { message: `Массив ${name} уже есть`, block };
-    
-    arrays[name] = new Array(size).fill(0);
-}
+        const indexVal = calculations(indexBlock);
+        const index = Number(indexVal);
+        if (!Number.isInteger(index)) {
+          throw { message: `Индекс должен быть целым ${indexVal}`, block };
+        }
 
-else if (type === "array-set") {
-    const name = block.querySelector(".array-name").textContent.trim();
-    const indexSlot = block.querySelector(".index-slot");
-    const valueSlot = block.querySelector(".value-slot");
-    const indexBlock = getBlockInSlot(indexSlot);
-    const valueBlock = getBlockInSlot(valueSlot);
-    
-    if (!indexBlock || !valueBlock) throw { message: "Нужны индекс и значение", block };
-    if (!(name in arrays)) throw { message: `Массив ${name} не найден`, block };
-    
-    const index = calculations(indexBlock);
-    const value = calculations(valueBlock);
-    
-    if (index < 0 || index >= arrays[name].length) {
-        throw { message: `Индекс ${index} переборщил`, block };
-    }
-    
-    arrays[name][index] = value;
-}
-        else if (type === "output") {
+        const value = calculations(valueBlock);
+        if (index < 0 || index >= arrays[name].length) {
+          throw { message: `Индекс ${index} переборщил`, block };
+        }
+        arrays[name][index] = value;
+      } else if (type === "output") {
         const expressionSlot = block.querySelector(".expr-slot");
         const expressionBlock = getBlockInSlot(expressionSlot);
         if (!expressionBlock)
@@ -420,14 +462,15 @@ else if (type === "array-set") {
             startBlock(innerBlock);
           }
         }
-      } 
+      }
     } catch (e) {
       if (e.block) e.block.classList.add("error");
       throw e;
     }
   }
-  const basicBlocks = blockZone.children;
-  for (let block of basicBlocks) {
+
+  const topBlocks = blockZone.children;
+  for (let block of topBlocks) {
     if (block.classList.contains("block")) {
       try {
         startBlock(block);
