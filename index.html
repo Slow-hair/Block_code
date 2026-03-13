@@ -24,6 +24,18 @@
                     <div class="slot expr-slot" data-accept="expression"></div>
                 </div>
             </div>
+            <div class="block block-variable" draggable="true" data-type="variable" ondragstart="move(event)">
+                <div class="block-title">Переменная</div>
+                <span contenteditable="true" class="var-name">x</span>
+            </div>
+            <div class="block block-number" draggable="true" data-type="number" ondragstart="move(event)">
+                <div class="block-title">Число</div>
+                <span contenteditable="true" class="number-value">0</span>
+            </div>
+            <div class="block block-string" draggable="true" data-type="string" ondragstart="move(event)">
+                <div class="block-title">Строка</div>
+                <span contenteditable="true" class="string-value">Введите текст</span>
+            </div>
             <div class="block block-operation" draggable="true" data-type="operation" ondragstart="move(event)">
                 <div class="block-title">Арифметика</div>
                 <div class="slot left-slot" data-accept="expression"></div>
@@ -51,21 +63,6 @@
                     <div class="slot right-slot" data-accept="expression"></div>
                 </div>
             </div>
-            
-            <div class="block block-number" draggable="true" data-type="number" ondragstart="move(event)">
-                <div class="block-title">Число</div>
-                <span contenteditable="true" class="number-value">0</span>
-            </div>
-            
-            <div class="block block-string" draggable="true" data-type="string" ondragstart="move(event)">
-                <div class="block-title">Строка</div>
-                <span contenteditable="true" class="string-value">Введите текст</span>
-            </div>
-            
-            <div class="block block-variable" draggable="true" data-type="variable" ondragstart="move(event)">
-                <div class="block-title">Переменная</div>
-                <span contenteditable="true" class="var-name">x</span>
-            </div>
             <div class="block block-condition" draggable="true" data-type="if" ondragstart="move(event)">
                 <div class="block-title">Условный оператор</div>
                 <div>Если:</div>
@@ -79,16 +76,13 @@
                     <div class="slot else-slot" data-accept="statement"></div>
                 </div>
             </div>
-            <div class="block block-logic" draggable="true" data-type="logic" ondragstart="move(event)">
-                <div class="block-title">Логическая операция</div>
-                <div class="slot left-slot" data-accept="expression"></div>
-                <select class="logic-operator">
-                    <option value="and">AND</option>
-                    <option value="or">OR</option>
-                </select>
-                <div class="slot right-slot" data-accept="expression"></div>
+             <div class="block block-while" draggable="true" data-type="while" ondragstart="move(event)">
+                <div class="block-title">Цикл «Пока»</div>
+                <div>Пока:</div>
+                <div class="slot condition-slot" data-accept="expression"></div>
+                <div>Выполнять:</div>
+                <div class="slot body-slot" data-accept="statement"></div>
             </div>
-
             <div class="block block-array-decl" draggable="true" data-type="array-decl" ondragstart="move(event)">
                 <div class="block-title">Массив</div>
                 int[] <span contenteditable="true" class="array-name">arr</span> [<span contenteditable="true" class="array-size">5</span>]
@@ -104,7 +98,15 @@
                 <div class="slot index-slot" data-accept="expression"></div> ] =
                 <div class="slot value-slot" data-accept="expression"></div>
             </div>
-
+            <div class="block block-logic" draggable="true" data-type="logic" ondragstart="move(event)">
+                <div class="block-title">Логическая операция</div>
+                <div class="slot left-slot" data-accept="expression"></div>
+                <select class="logic-operator">
+                    <option value="and">AND</option>
+                    <option value="or">OR</option>
+                </select>
+                <div class="slot right-slot" data-accept="expression"></div>
+            </div>
             <div class="block block-not" draggable="true" data-type="not" ondragstart="move(event)">
                 <div class="block-title">Отрицание</div>
                 NOT <div class="slot expr-slot" data-accept="expression"></div>
@@ -114,16 +116,7 @@
                 Вывод:
                 <div class="slot expr-slot" data-accept="expression"></div>
             </div>
-            
-            <div class="block block-while" draggable="true" data-type="while" ondragstart="move(event)">
-                <div class="block-title">Цикл «Пока»</div>
-                <div>Пока:</div>
-                <div class="slot condition-slot" data-accept="expression"></div>
-                <div>Выполнять:</div>
-                <div class="slot body-slot" data-accept="statement"></div>
-            </div>
         </div>
-        
         <div class="block-zone" ondragover="event.preventDefault()" ondrop="drop(event)" id="block_zone"></div>
     </div>
 
